@@ -33,21 +33,22 @@
 		
 		
 		<!-- 引用springcloud框架 -->
-		<dependencies>
-		    <dependency>
-		        <groupId>org.springframework.cloud</groupId>
-		        <artifactId>spring-cloud-starter-eureka</artifactId>
-		    </dependency>
 		    <dependency>
 		        <groupId>org.springframework.boot</groupId>
 		        <artifactId>spring-boot-starter-web</artifactId>
 		    </dependency>
-		</dependencies>
 		<!-- 引用consul注册中心 -->
 		<dependency>
 		  <groupId>org.springframework.cloud</groupId>
 		  <artifactId>spring-cloud-starter-consul-discovery</artifactId>
 		</dependency>
+		
+		<!-- 引用自检服务 -->
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+		
 	</dependencies>
 	
 	<dependencyManagement>
