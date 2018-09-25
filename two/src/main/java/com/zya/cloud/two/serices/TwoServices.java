@@ -5,5 +5,5 @@ import org.springframework.stereotype.Service;
 @Service
 public interface TwoServices {
 
-	String showParam(String param);
+	String showParam(String param) throws Exception;
 }

@@ -25,7 +25,7 @@ public class TestResource {
 	@Path(value = "/showParam/{param}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public String showParam(@PathParam("param") String param) {
+	public String showParam(@PathParam("param") String param)  throws Exception {
 		if (StringUtils.isEmpty(param)) {
 			return null;
 		}

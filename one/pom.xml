@@ -47,8 +47,12 @@
 					<artifactId>spring-boot-starter-web</artifactId>
 				</exclusion>
 				<exclusion>
-					<groupId>javax.ws.rs</groupId>
 					<artifactId>jsr311-api</artifactId>
+					<groupId>javax.ws.rs</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>hystrix-core</artifactId>
+					<groupId>com.netflix.hystrix</groupId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -63,40 +67,39 @@
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-feign</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>hystrix-core</artifactId>
+					<groupId>com.netflix.hystrix</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- 引用jax-rs风格的feign -->
 		<dependency>
 			<groupId>com.netflix.feign</groupId>
 			<artifactId>feign-jaxrs</artifactId>
 			<version> 8.17.0</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>jsr311-api</artifactId>
+					<groupId>javax.ws.rs</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		
+		<!-- 启动服务提示HystrixCommandAspect类未定义，因此添加此依赖 -->
 		<dependency>
-		      <groupId>com.netflix.feign</groupId>
-		      <artifactId>feign-jackson</artifactId>
-		      <version>8.18.0</version>
-		  </dependency>
-
+            <groupId>com.netflix.hystrix</groupId>
+            <artifactId>hystrix-javanica</artifactId>
+            <version>1.5.12</version>
+        </dependency>
+        
 		<dependency>
 			<groupId>com.paypal.springboot</groupId>
 			<artifactId>resteasy-spring-boot-starter</artifactId>
 			<version>2.3.0-RELEASE</version>
 		</dependency><!-- 引用resteasy风格 -->
 		
-		<dependency>
-        <groupId>org.apache.axis2</groupId>
-        <artifactId>axis2-jaxws</artifactId>
-        <version>1.6.2</version>
-        <scope>runtime</scope>
-        <exclusions>
-            <!-- Causes java.lang.NoSuchMethodError: javax.ws.rs.core.Response$Status$Family.familyOf(I)Ljavax/ws/rs/core/Response$Status$Family; -->
-            <exclusion>
-                <groupId>javax.ws.rs</groupId>
-                <artifactId>jsr311-api</artifactId>
-            </exclusion>
-        </exclusions>
-    </dependency>
-
 	</dependencies>
 
 	<dependencyManagement>
