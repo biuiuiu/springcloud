@@ -3,9 +3,12 @@ package com.zya.cloud.two.ui;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
@@ -17,6 +20,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +33,8 @@ import com.zya.cloud.two.serices.TwoServices;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class TestResource {
+
+	private static final Logger logger = Logger.getLogger(TestResource.class);
 
 	@Autowired
 	private TwoServices service;
@@ -49,6 +55,11 @@ public class TestResource {
 		return "one";
 	}
 
+	/**
+	 * 测试transient关键字，序列化时忽略字段，反序列化此字段为空
+	 * 
+	 * @return
+	 */
 	@GET
 	@Path(value = "getObject")
 	public TestEntity getObject() {
@@ -56,10 +67,19 @@ public class TestResource {
 		entity.setAge("12");
 		entity.setName("zya");
 		entity.setPassword("11");
-		saveObj2File(entity,"C:\\个人文件\\test\\1.log");
-		return entity;
+		saveObj2File(entity, "C:\\个人文件\\test\\1.log");
+		TestEntity entity2 = readFromFile("C:\\个人文件\\test\\1.log");
+		System.out.println(entity2.toString());
+		return entity2;
 	}
 
+	/**
+	 * 对象写入文件持久化
+	 * 
+	 * @param entity
+	 * @param filePath
+	 * @return
+	 */
 	private boolean saveObj2File(TestEntity entity, String filePath) {
 		if (java.util.Objects.isNull(entity) || StringUtils.isBlank(filePath)) {
 			return false;
@@ -71,13 +91,13 @@ public class TestResource {
 			out = new FileOutputStream(file);
 			objectOutputStream = new ObjectOutputStream(out);
 			objectOutputStream.writeObject(entity);
-//			out.write(entity.toString().getBytes());
+			// out.write(entity.toString().getBytes());
 			return true;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}finally {
+		} finally {
 			try {
 				out.close();
 				objectOutputStream.close();
@@ -86,6 +106,42 @@ public class TestResource {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * 从指定文件读取反序列化成对象
+	 * 
+	 * @param filePath
+	 * @return
+	 */
+	private TestEntity readFromFile(String filePath) {
+		TestEntity entity = new TestEntity();
+		if (java.util.Objects.isNull(entity) || StringUtils.isBlank(filePath)) {
+			return entity;
+		}
+		File file = new File(filePath);
+		if (!file.exists()) {
+			return entity;
+		}
+		InputStream in = null;
+		ObjectInputStream inputStream = null;
+		try {
+			in = new FileInputStream(file);
+			inputStream = new ObjectInputStream(in);
+			entity = (TestEntity) inputStream.readObject();
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("对象反序列化错误");
+		} finally {
+			try {
+				inputStream.close();
+				in.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+				logger.error("流关闭错误");
+			}
+		}
+		return entity;
 	}
 
 }
