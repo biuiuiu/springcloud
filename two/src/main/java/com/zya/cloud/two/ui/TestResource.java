@@ -1,5 +1,14 @@
 package com.zya.cloud.two.ui;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -28,7 +37,7 @@ public class TestResource {
 	@Path(value = "/showParam/{param}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public String showParam(@PathParam("param") String param)  throws Exception {
+	public String showParam(@PathParam("param") String param) throws Exception {
 		if (StringUtils.isEmpty(param)) {
 			return null;
 		}
@@ -39,14 +48,44 @@ public class TestResource {
 	public String dc() {
 		return "one";
 	}
-	
+
 	@GET
 	@Path(value = "getObject")
-	public TestEntity getObject(){
+	public TestEntity getObject() {
 		TestEntity entity = new TestEntity();
 		entity.setAge("12");
 		entity.setName("zya");
 		entity.setPassword("11");
+		saveObj2File(entity,"C:\\个人文件\\test\\1.log");
 		return entity;
 	}
+
+	private boolean saveObj2File(TestEntity entity, String filePath) {
+		if (java.util.Objects.isNull(entity) || StringUtils.isBlank(filePath)) {
+			return false;
+		}
+		File file = new File(filePath);
+		OutputStream out = null;
+		ObjectOutputStream objectOutputStream = null;
+		try {
+			out = new FileOutputStream(file);
+			objectOutputStream = new ObjectOutputStream(out);
+			objectOutputStream.writeObject(entity);
+//			out.write(entity.toString().getBytes());
+			return true;
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				out.close();
+				objectOutputStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
 }

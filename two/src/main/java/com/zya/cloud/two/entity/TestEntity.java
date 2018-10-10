@@ -36,4 +36,11 @@ public class TestEntity implements Serializable {
 		this.password = password;
 	}
 
+	@Override
+	public String toString() {
+		return "TestEntity [name=" + name + ", age=" + age + ", password=" + password + "]";
+	}
+
+	
+	
 }
