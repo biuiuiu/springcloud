@@ -12,10 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.zya.cloud.two.entity.TestEntity;
 import com.zya.cloud.two.serices.TwoServices;
 
 @Controller
 @Path(value = "two")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class TestResource {
 
 	@Autowired
@@ -35,5 +38,15 @@ public class TestResource {
 	@GetMapping("/consumer")
 	public String dc() {
 		return "one";
+	}
+	
+	@GET
+	@Path(value = "getObject")
+	public TestEntity getObject(){
+		TestEntity entity = new TestEntity();
+		entity.setAge("12");
+		entity.setName("zya");
+		entity.setPassword("11");
+		return entity;
 	}
 }
