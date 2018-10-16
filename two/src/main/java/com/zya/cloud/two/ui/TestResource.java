@@ -9,6 +9,9 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -36,6 +39,8 @@ public class TestResource {
 
 	@Autowired
 	private TwoServices service;
+	
+	private static ExecutorService executorService = Executors.newFixedThreadPool(2);
 
 	@GET
 	@Path(value = "/showParam/{param}")
@@ -48,9 +53,12 @@ public class TestResource {
 		return service.showParam(param);
 	}
 
-	@GetMapping("/consumer")
+	@GET
+	@Path(value = "/dc/{param}")
 	public String dc() {
-		return "one";
+		executorService.execute(new ThreadPoolTest());
+		ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) executorService;
+		return String.valueOf(threadPoolExecutor.getActiveCount()) + "队列数量：" + threadPoolExecutor.getQueue().size();
 	}
 
 	/**
